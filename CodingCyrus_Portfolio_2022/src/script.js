@@ -2,6 +2,8 @@ import './style.css'
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import * as dat from 'lil-gui'
+import { FontLoader } from 'three/examples/jsm/loaders/FontLoader.js'
+import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry.js'
 
 /**
  * Base
@@ -27,6 +29,49 @@ pointLight.position.y = 3
 pointLight.position.z = 4
 scene.add(pointLight)
 
+
+/**
+ * Textures
+ */
+ const textureLoader = new THREE.TextureLoader()
+ const matcapTexture = textureLoader.load('/textures/matcaps/3.png')
+
+/**
+ * Fonts
+ */
+ const fontLoader = new FontLoader()
+
+ fontLoader.load(
+     '/fonts/helvetiker_bold.typeface.json',
+     (font) => 
+     {
+         console.log("loaded")
+         const textGeometry = new TextGeometry(
+             'CODINGCYRUS',
+             {
+                 font: font,
+                 size: 0.5,
+                 height: 0.2,
+                 curveSegments: 12,
+                 bevelEnabled: true,
+                 bevelThickness: 0.03,
+                 bevelSize: 0.02,
+                 bevelOffset: 0,
+                 bevelSegments: 5
+             }
+         )
+ 
+         textGeometry.center()
+ 
+         const material = new THREE.MeshMatcapMaterial({ matcap: matcapTexture})
+         //Create Text Mesh
+         const text = new THREE.Mesh(textGeometry, material)
+         scene.add(text)
+     }
+ )
+
+
+ 
 /**
  * Objects
  */
@@ -114,6 +159,7 @@ const clock = new THREE.Clock()
 
 const tick = () =>
 {
+    
     const elapsedTime = clock.getElapsedTime()
 
     // Update objects
@@ -133,6 +179,7 @@ const tick = () =>
 
     // Call tick again on the next frame
     window.requestAnimationFrame(tick)
+    
 }
 
 tick()
