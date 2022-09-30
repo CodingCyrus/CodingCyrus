@@ -1,4 +1,5 @@
-# Three.js Journey
+# CodingCyrus_Portfolio
+CodingCyrus Portfolio 
 
 ## Setup
 Download [Node.js](https://nodejs.org/en/download/).
