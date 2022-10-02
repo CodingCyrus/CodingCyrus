@@ -120,8 +120,6 @@ const moonTexture = textureLoader.load('/textures/matcaps/sphere_textures/moon.j
      }
  )
 
-
- 
 /**
  * Objects
  */
