@@ -209,7 +209,7 @@ window.addEventListener('resize', () =>
 const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height, 0.1, 100)
 camera.position.x = 2.5
 camera.position.y = 2
-camera.position.z = 7
+camera.position.z = 8
 scene.add(camera)
 
 // Controls
@@ -236,9 +236,9 @@ const tick = () =>
     const elapsedTime = clock.getElapsedTime()
 
     // Update objects
-    earth.rotation.y = 0.5 * elapsedTime
-    moon.rotateY(0.004);
-    moonObj.rotateY(0.04);
+    earth.rotation.y = 0.2 * elapsedTime
+    moon.rotateY(0.005);
+    moonObj.rotateY(0.02);
 
     // cube.rotation.y = 0.1 * elapsedTime
     // torus.rotation.y = 0.1 * elapsedTime
