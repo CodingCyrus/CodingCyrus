@@ -5,6 +5,7 @@ import * as dat from 'lil-gui'
 import { FontLoader } from 'three/examples/jsm/loaders/FontLoader.js'
 import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry.js'
 
+
 /**
  * Base
  */
@@ -125,26 +126,34 @@ const moonTexture = textureLoader.load('/textures/matcaps/sphere_textures/moon.j
  */
 // Materials
 const earthMaterial = new THREE.MeshStandardMaterial()
-// const material = new THREE.MeshNormalMaterial()
-// const material = new THREE.MeshBasicMaterial({map: sphereTexture})
-// const material = new THREE.MeshStandardMaterial()
 earthMaterial.metalness = 0.20
 earthMaterial.roughness = 0.50
 earthMaterial.map = earthTexture
 
 const moonMaterial = new THREE.MeshStandardMaterial()
-// const material = new THREE.MeshNormalMaterial()
-// const material = new THREE.MeshBasicMaterial({map: sphereTexture})
-// const material = new THREE.MeshStandardMaterial()
 moonMaterial.metalness = 0.20
 moonMaterial.roughness = 0.50
 moonMaterial.map = moonTexture
 
 // Objects
+const planet = new THREE.Group()
+scene.add(planet)
+
 const earth = new THREE.Mesh(
     new THREE.SphereGeometry(2, 32, 32),
     earthMaterial
 )
+planet.add(earth)
+
+const aboutMe = new THREE.Mesh(
+    new THREE.BoxGeometry(1, 1, 1),
+    // new THREE.MeshStandardMaterial({ color: '#ac8382' })
+)
+aboutMe.userData.name = 'About Me'
+aboutMe.userData.clickable = true;
+aboutMe.position.y = 0
+aboutMe.position.x = 2.3
+planet.add(aboutMe)
 
 const moon = new THREE.Mesh(
     new THREE.SphereGeometry(0.5, 32, 32),
@@ -154,28 +163,9 @@ moon.position.x = -4
 
 const moonObj = new THREE.Object3D();
 moonObj.add(moon)
+moon.userData.name = 'Moon'
+moon.userData.clickable = true;
 scene.add(moonObj)
-
-// const cube = new THREE.Mesh(
-//     new THREE.BoxGeometry(0.75, 0.75, 0.75),
-//     material
-// )
-
-// const torus = new THREE.Mesh(
-//     new THREE.TorusGeometry(0.3, 0.2, 32, 64),
-//     material
-// )
-// torus.position.x = 1.5
-
-// const plane = new THREE.Mesh(
-//     new THREE.PlaneGeometry(5, 5),
-//     material
-// )
-// plane.rotation.x = - Math.PI * 0.5
-// plane.position.y = - 0.65
-
-scene.add(earth)
-// scene.add(sphere, cube, torus, plane)
 
 /**
  * Sizes
@@ -224,17 +214,48 @@ renderer.setSize(sizes.width, sizes.height)
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
 
 /**
+ * Mouse Activity
+ */
+const raycaster = new THREE.Raycaster();
+const mouse = new THREE.Vector2();
+var clickable = new THREE.Object3D;
+
+window.addEventListener('click', event => {
+    
+	// calculate pointer position in normalized device coordinates
+	// (-1 to +1) for both components
+	mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+	mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+	
+    // update the picking ray with the camera and pointer position
+    raycaster.setFromCamera( mouse, camera );
+
+    // calculate objects intersecting the picking ray
+	const found = raycaster.intersectObjects( scene.children );
+
+    if(found.length > 0 && found[0].object.userData.clickable) {
+        clickable = found[0].object
+        clickable.material.color.set('#0000ff')
+        // location.href ='https://codingcyrus.netlify.app/';
+        console.log(`found draggable ${clickable.userData.name}`)
+    }
+})
+
+
+/**
  * Animate
  */
 const clock = new THREE.Clock()
 
 const tick = () =>
 {
-    
+    // hoverObject()
     const elapsedTime = clock.getElapsedTime()
 
     // Update objects
-    earth.rotation.y = 0.2 * elapsedTime
+    // earth.rotation.y = 0.2 * elapsedTime
+    planet.rotation.y = 0.2 * elapsedTime
+    
     moon.rotateY(0.005);
     moonObj.rotateY(0.02);
 
