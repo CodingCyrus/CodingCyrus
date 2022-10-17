@@ -4,6 +4,7 @@ import { MapControls, OrbitControls } from 'three/examples/jsm/controls/OrbitCon
 import * as dat from 'lil-gui'
 import { FontLoader } from 'three/examples/jsm/loaders/FontLoader.js'
 import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry.js'
+import { Material } from 'three'
 
 
 /**
@@ -141,13 +142,15 @@ scene.add(planet)
 
 const earth = new THREE.Mesh(
     new THREE.SphereGeometry(2, 32, 32),
-    earthMaterial
+    new THREE.MeshNormalMaterial()
+    // earthMaterial
 )
 planet.add(earth)
 
 const aboutMe = new THREE.Mesh(
     new THREE.BoxGeometry(1, 1, 1),
-    // new THREE.MeshStandardMaterial({ color: '#ac8382' })
+    // new THREE.MeshNormalMaterial()
+    new THREE.MeshStandardMaterial({ color: '#ac8382' })
 )
 aboutMe.userData.name = 'About Me'
 aboutMe.userData.clickable = true;
@@ -203,6 +206,8 @@ scene.add(camera)
 // Controls
 const controls = new OrbitControls(camera, canvas)
 controls.enableDamping = true
+controls.minDistance = 5;
+controls.maxDistance = 15;
 
 /**
  * Renderer
