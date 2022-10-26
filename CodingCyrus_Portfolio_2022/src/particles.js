@@ -1,6 +1,15 @@
 import * as THREE from 'three'
 
 /**
+ * Textures
+ */
+ const textureLoader = new THREE.TextureLoader()
+ const particleTexture = textureLoader.load('/textures/particles/8.png')
+
+
+
+
+/**
  * Particles
  */
 //Geometry
@@ -21,8 +30,12 @@ particlesGeometry.setAttribute(
 
 //Material
 const particlesMaterial = new THREE.PointsMaterial()
-particlesMaterial.size = 0.05
+particlesMaterial.size = 0.3
 particlesMaterial.sizeAttenuation = true;
+particlesMaterial.color = new THREE.Color("white")
+particlesMaterial.transparent = true
+particlesMaterial.alphaMap = particleTexture
+particleTexture.alphaTest = 0.001
 
 //Points
 export const particles = new THREE.Points(particlesGeometry, particlesMaterial)
