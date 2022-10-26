@@ -5,6 +5,7 @@ import * as dat from 'lil-gui'
 import { FontLoader } from 'three/examples/jsm/loaders/FontLoader.js'
 import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry.js'
 import { Material } from 'three'
+import { particles } from './particles'
 
 
 /**
@@ -25,13 +26,6 @@ const scene = new THREE.Scene()
 const ambientLight = new THREE.AmbientLight(0xFFFFF7, 0.5)
 scene.add(ambientLight)
 
-// const directionalLight = new THREE.DirectionalLight(0x001eff, 0.3)
-// directionalLight.position.set(1, 0.25, 0)
-// scene.add(directionalLight)
-
-// const hemisphereLight = new THREE.HemisphereLight(0xffd300, 0x0000ff, 1)
-// scene.add(hemisphereLight)
-
 const pointLight = new THREE.PointLight(0xF4E99B, 0.5)
 pointLight.position.x = 2
 pointLight.position.y = 3
@@ -39,25 +33,10 @@ pointLight.position.z = 4
 scene.add(pointLight)
 
 /**
- * Scene Background
- */
-scene.background = new THREE.CubeTextureLoader()
-    .setPath('textures/matcaps/')
-    .load([
-    'space_background.jpg',
-    'space_background.jpg',
-    'space_background.jpg',
-    'space_background.jpg',
-    'space_background.jpg',
-    'space_background.jpg'
-]);
-
-/**
  * Textures
  */
- const textureLoader = new THREE.TextureLoader()
- const matcapTexture = textureLoader.load('/textures/matcaps/3.png')
-//  const matcapTexture = textureLoader.load('/textures/matcaps/9.png')
+const textureLoader = new THREE.TextureLoader()
+const matcapTexture = textureLoader.load('/textures/matcaps/3.png')
 const earthTexture = textureLoader.load('/textures/matcaps/sphere_textures/EarthWebGL.jpg')
 const moonTexture = textureLoader.load('/textures/matcaps/sphere_textures/moon.jpg')
 
@@ -67,12 +46,6 @@ const moonTexture = textureLoader.load('/textures/matcaps/sphere_textures/moon.j
  const fontLoader = new FontLoader()
 
  fontLoader.load(
-    //  '/fonts/helvetiker_bold.typeface.json',
-    // '/fonts/CyberFont Black_Regular.json',
-    // '/fonts/Blade Runner Movie Font_Regular.json',
-    // '/fonts/Cyberpunk_Regular.json',
-    // '/fonts/HACKED_Regular.json',
-    // '/fonts/Bugfast_Regular.json',
     '/fonts/Digital Dare_Regular.json',
      (font) => 
      {
@@ -123,8 +96,14 @@ const moonTexture = textureLoader.load('/textures/matcaps/sphere_textures/moon.j
  )
 
 /**
- * Objects
+ * Background Particles
  */
+scene.add(particles)
+
+/**
+ * Space Objects
+ */
+
 // Materials
 const earthMaterial = new THREE.MeshStandardMaterial()
 earthMaterial.metalness = 0.20
@@ -136,10 +115,11 @@ moonMaterial.metalness = 0.20
 moonMaterial.roughness = 0.50
 moonMaterial.map = moonTexture
 
-// Objects
+//Planet Group
 const planet = new THREE.Group()
 scene.add(planet)
 
+//Earth Object
 const earth = new THREE.Mesh(
     new THREE.SphereGeometry(2, 32, 32),
     new THREE.MeshNormalMaterial()
@@ -147,9 +127,9 @@ const earth = new THREE.Mesh(
 )
 planet.add(earth)
 
+//About Me Box
 const aboutMe = new THREE.Mesh(
     new THREE.BoxGeometry(1, 1, 1),
-    // new THREE.MeshNormalMaterial()
     new THREE.MeshStandardMaterial({ color: '#ac8382' })
 )
 aboutMe.userData.name = 'About Me'
@@ -158,6 +138,7 @@ aboutMe.position.y = 0
 aboutMe.position.x = 2.3
 planet.add(aboutMe)
 
+//Moon Object
 const moon = new THREE.Mesh(
     new THREE.SphereGeometry(0.5, 32, 32),
     moonMaterial
@@ -197,10 +178,16 @@ window.addEventListener('resize', () =>
  * Camera
  */
 // Base camera
-const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height, 0.1, 100)
-camera.position.x = 2.5
-camera.position.y = 2
-camera.position.z = 8
+const camera = new THREE.PerspectiveCamera(80, sizes.width / sizes.height, 0.1, 1000)
+if (window.innerWidth < 400 && window.innerHeight < 1000) {
+    camera.position.x = 2
+    camera.position.y = 2
+    camera.position.z = 10
+} else {
+    camera.position.x = 3
+    camera.position.y = 2
+    camera.position.z = 6
+}
 scene.add(camera)
 
 // Controls
@@ -258,18 +245,10 @@ const tick = () =>
     const elapsedTime = clock.getElapsedTime()
 
     // Update objects
-    // earth.rotation.y = 0.2 * elapsedTime
     planet.rotation.y = 0.2 * elapsedTime
     
     moon.rotateY(0.005);
     moonObj.rotateY(0.02);
-
-    // cube.rotation.y = 0.1 * elapsedTime
-    // torus.rotation.y = 0.1 * elapsedTime
-
-    // sphere.rotation.x = 0.15 * elapsedTime
-    // cube.rotation.x = 0.15 * elapsedTime
-    // torus.rotation.x = 0.15 * elapsedTime
 
     // Update controls
     controls.update()
@@ -279,7 +258,6 @@ const tick = () =>
 
     // Call tick again on the next frame
     window.requestAnimationFrame(tick)
-    
 }
 
 tick()
