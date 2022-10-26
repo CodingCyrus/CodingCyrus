@@ -250,6 +250,9 @@ const tick = () =>
     moon.rotateY(0.005);
     moonObj.rotateY(0.02);
 
+    //Update particles
+    particles.rotation.y = elapsedTime * 0.05
+
     // Update controls
     controls.update()
 
